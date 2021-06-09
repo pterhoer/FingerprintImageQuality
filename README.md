@@ -3,6 +3,7 @@
 TODO
 - add research paper link
 - add link and code for implementation
+- adapt citing
 
 ## MiDeCon: Minutia Detection Confidence for Unsupervised and Accurate Minutia and Fingerprint Quality Assessment
 
@@ -45,17 +46,23 @@ For more details, please take a look at the paper.
 
 ## Results
 
-Face image quality assessment results are shown below on LFW (left) and Adience (right). SER-FIQ (same model) is based on ArcFace and shown in red. The plots show the FNMR at ![\Large 10^{-3}](https://latex.codecogs.com/gif.latex?\inline&space;10^{-3}) FMR as recommended by the [best practice guidelines](https://op.europa.eu/en/publication-detail/-/publication/e81d082d-20a8-11e6-86d0-01aa75ed71a1) of the European Border Guard Agency Frontex. For more details and results, please take a look at the paper.
-
 ### Quality Assessment of Single Minutiae
+
+Evaluating minutia quality assessment - only a certain number of the highest quality minutiae are used for recognition.
+The recognition performance is reported in FNMR@![\Large 10^{-2}](https://latex.codecogs.com/gif.latex?\inline&space;10^{-2})FMR on the Bozorth3 and the MCC matcher. Each DB was captured with a different sensor. Our proposed methodology based on minutia detection confidence shows lower recognition errors than related works in all cases, except on the synthetic data (DB4). This demonstrates a strong quality estimation performance for single minutiae.
 
 <img src="Table1.png" width="800" > 
 
 
 ### Quality Assessment of Full Fingerprints
+
+Fingerprint quality assessment on the MCC matcher. Each row represents the recognition error at a different FMR
+(![\Large 10^{-1}](https://latex.codecogs.com/gif.latex?\inline&space;10^{-1}), ![\Large 10^{-2}](https://latex.codecogs.com/gif.latex?\inline&space;10^{-2}), and ![\Large 10^{-3}](https://latex.codecogs.com/gif.latex?\inline&space;10^{-3})). Especially on the real-world sensor data, the proposed approach outperforms the widely-used NFIQ and NFIQ2 baselines. This holds true for all investigated sensor-types.
+
 <img src="Figure3.png" width="800" > 
 
 ## Installation
+TODO - Andre
 
 We recommend Anaconda to install the required packages.
 This can be done by creating an virtual environment via
@@ -109,6 +116,7 @@ In the [Paper](https://arxiv.org/abs/2003.09373), this is refered to _SER-FIQ (s
 
 
 ## Citing
+TODO - Philipp
 
 If you use this code, please cite the following paper.
 
@@ -137,7 +145,7 @@ If you use this code, please cite the following paper.
 
 ```
 
-If you make use of our SER-FIQ implementation based on ArcFace, please additionally cite the original ![ArcFace module](https://github.com/deepinsight/insightface).
+If you make use of our MiDeCon implementation based on FineNet, please additionally cite the original ![MinutiaeNet paper](https://github.com/luannd/MinutiaeNet).
 
 ## Acknowledgement
 
