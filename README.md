@@ -15,6 +15,8 @@ IEEE International Joint Conference on Biometrics (IJCB) 2021
 
 ## Table of Contents 
 
+<img src="Concept.png" width="500" align="right">
+
 - [Abstract](#abstract)
 - [Key Points](#key-points)
 - [Results](#results)
@@ -25,7 +27,6 @@ IEEE International Joint Conference on Biometrics (IJCB) 2021
 
 ## Abstract
 
-<img src="CVPR_2020_teaser_1200x1200.gif" width="400" height="400" align="right">
 
 The most determinant factor to achieve high accuracies in fingerprint recognition systems is the quality of its samples. Previous works mainly proposed supervised solutions based on image properties that neglects the minutiae extraction process, despite that most fingerprint recognition techniques are based on this extracted information. Consequently, a fingerprint image might be assigned as high quality even if the utilized minutia extractor produces unreliable information for recognition. In this work, we propose a novel concept of assessing minutia and fingerprint quality based on minutia detection confidence (MiDeCon). MiDeCon can be applied to an arbitrary deep learning based minutia extractor and does not require quality labels for learning. Moreover, the training stage of MiDeCon can be completely avoided if a pre-trained minutiae extraction neural network is available. We propose using the detection reliability of the extracted minutia as its quality indicator. By combining the highest minutia qualities, MeDiCon accurately determines the quality of a full fingerprint. Experiments are done on the publicly available databases of the FVC 2006 and compared against NIST’s widely-used fingerprint image quality software NFIQ1 and NFIQ2. The results demonstrate a significantly stronger quality assessment performance of the proposed MiDeCon-qualities as related works on both, minutia- and fingerprint-level. 
 
@@ -46,7 +47,13 @@ For more details, please take a look at the paper.
 
 Face image quality assessment results are shown below on LFW (left) and Adience (right). SER-FIQ (same model) is based on ArcFace and shown in red. The plots show the FNMR at ![\Large 10^{-3}](https://latex.codecogs.com/gif.latex?\inline&space;10^{-3}) FMR as recommended by the [best practice guidelines](https://op.europa.eu/en/publication-detail/-/publication/e81d082d-20a8-11e6-86d0-01aa75ed71a1) of the European Border Guard Agency Frontex. For more details and results, please take a look at the paper.
 
-<img src="FQA-Results/001FMR_lfw_arcface.png" width="430" >  <img src="FQA-Results/001FMR_adience_arcface.png" width="430" >
+### Quality Assessment of Single Minutiae
+
+<img src="Table1.png" width="800" > 
+
+
+### Quality Assessment of Full Fingerprints
+<img src="Figure3.png" width="800" > 
 
 ## Installation
 
