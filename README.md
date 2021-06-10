@@ -34,13 +34,13 @@ The most determinant factor to achieve high accuracies in fingerprint recognitio
 ## Key Points
 In contrast to previous works, the proposed approach:
 
-- **Does not require quality labels for training** - Previous works that often rely on error-prone labelling mechanisms without a clear definition of quality. Our approach avoids the use of inaccurate quality labels by using the minutia detection confidence as a quality estimate. Moreover, the training state can be completely avoided if pre-trained minutiae extraction neural network trained with dropout is available.
+- **Does not require quality labels for training** - Previous works often rely on error-prone labelling mechanisms without a clear definition of quality. Our approach avoids the use of inaccurate quality labels by using the minutia detection confidence as a quality estimate. Moreover, the training state can be completely avoided if pre-trained minutiae extraction neural network trained with dropout is available. 
 
-- **Considers difficulties in the minutiae extraction** - Previous works estimates the quality of a fingerprint based on the properties of the image neglecting the minutiae extraction process. However, the extraction process might faces difficulties that is not considered in the image properties and thus, produce unreliable minutia information. Our solution defines quality through the prediction confidence of the extractor and thus, considers this problem.
+- **Considers difficulties in the minutiae extraction** - Previous works estimates the quality of a fingerprint based on the properties of the image neglecting the minutiae extraction process. However, the extraction process might face difficulties that are not considered in the image properties and thus, produce unreliable minutia information. Our solution defines quality through the prediction confidence of the extractor and thus, considers this problem. 
 
-- **Produces continuous quality values** - While previous works often categorizes the quality outputs in discrete categories (e.g. {good, bad, ugly}; {1,2,3,4,5}), our approach produces continuous quality values that allow more fine-grained and flexible enrolment and matching processes.
+- **Produces continuous quality values** - While previous works often categorize the quality outputs in discrete categories (e.g. {good, bad, ugly}; {1,2,3,4,5}),, our approach produces continuous quality values that allow more fine-grained and flexible enrolment and matching processes. 
 
-- **Includes quality assessment of single minutiae** - Unlike previous works, our solution assesses the quality of full fingerprints as well as the quality of single minutiae. This is specifically useful in forensic scenarios where forensic examiner aim to find reliable minutiae suitable for identification.
+- **Includes quality assessment of single minutiae** - Unlike previous works, our solution assesses the quality of full fingerprints as well as the quality of single minutiae. This is specifically useful in forensic scenarios where forensic examiners aim to find reliable minutiae suitable for identification.
 
 For more details, please take a look at the paper.
 
