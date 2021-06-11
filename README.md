@@ -1,17 +1,14 @@
 # Fingerprint Image Quality
 
-TODO
-- add research paper link
-- add link and code for implementation
-- adapt citing
 
 ## MiDeCon: Minutia Detection Confidence for Unsupervised and Accurate Minutia and Fingerprint Quality Assessment
 
+The code for MiDeCon is currently cleaned and will be online end of June.
 
 IEEE International Joint Conference on Biometrics (IJCB) 2021
 
-* [Research Paper](link to follow)
-* [Implementation on FineNet](face_image_quality.py)
+* [Research Paper](https://arxiv.org/abs/2106.05601)
+* [Implementation - MiDeCon on FineNet](to follow)
 
 
 ## Table of Contents 
@@ -116,33 +113,19 @@ In the [Paper](https://arxiv.org/abs/2003.09373), this is refered to _SER-FIQ (s
 
 
 ## Citing
-TODO - Philipp
 
 If you use this code, please cite the following paper.
 
 
 ```
-@inproceedings{DBLP:conf/icb/TerhorstKDKK20,
-  author    = {Philipp Terh{\"{o}}rst and
-               Jan Niklas Kolf and
-               Naser Damer and
-               Florian Kirchbuchner and
-               Arjan Kuijper},
-  title     = {Face Quality Estimation and Its Correlation to Demographic and Non-Demographic
-               Bias in Face Recognition},
-  booktitle = {2020 {IEEE} International Joint Conference on Biometrics, {IJCB} 2020,
-               Houston, TX, USA, September 28 - October 1, 2020},
-  pages     = {1--11},
-  publisher = {{IEEE}},
-  year      = {2020},
-  url       = {https://doi.org/10.1109/IJCB48548.2020.9304865},
-  doi       = {10.1109/IJCB48548.2020.9304865},
-  timestamp = {Thu, 14 Jan 2021 15:14:18 +0100},
-  biburl    = {https://dblp.org/rec/conf/icb/TerhorstKDKK20.bib},
-  bibsource = {dblp computer science bibliography, https://dblp.org}
+@misc{terhoerst2021midecon,
+      title={{MiDeCon}: Unsupervised and Accurate Fingerprint and Minutia Quality Assessment based on Minutia Detection Confidence}, 
+      author={Philipp Terh{\"{o}}rst and Andre Boller and Naser Damer and Florian Kirchbuchner and Arjan Kuijper},
+      year={2021},
+      eprint={2106.05601},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
 }
-
-
 ```
 
 If you make use of our MiDeCon implementation based on FineNet, please additionally cite the original ![MinutiaeNet paper](https://github.com/luannd/MinutiaeNet).
