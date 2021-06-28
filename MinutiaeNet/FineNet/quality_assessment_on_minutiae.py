@@ -7,7 +7,7 @@ import sys
 
 # Arguments
 parser = argparse.ArgumentParser(description='compute mindtct and coarsenet templates')
-parser.add_argument('--database', default="FVC2006", help='Database')
+parser.add_argument('--database', default="testsamples", help='Database')
 parser.add_argument('--alpha', default=0.5, help="Alpha")
 args = parser.parse_args()
 
@@ -35,16 +35,21 @@ def mnt_reader(file_name):
     f.close()
     return minutiae
 
-relpath = "../../Data/%s_quality_minutiae_templates" % args.database
+relpath = "../../Data/minutiae_qualityscores"
 
 if not os.path.exists(relpath):
     os.mkdir(relpath)
 
 #create target folder
-target_path = os.path.join(relpath, "MiDeCon_templates_%s" % str(args.alpha))
+rel_path = os.path.join(relpath, "MiDeCon_scores_%s" % str(args.alpha))
+if not os.path.isdir(rel_path):
+    os.mkdir(rel_path)
+
+target_path = os.path.join(rel_path, "%s" % args.database)
 if not os.path.isdir(target_path):
     os.mkdir(target_path)
-   
+
+
 if not os.path.exists(qualitypath):
     sys.exit("Measurements don't exist!")
 for root, dirs, files in os.walk(qualitypath):     

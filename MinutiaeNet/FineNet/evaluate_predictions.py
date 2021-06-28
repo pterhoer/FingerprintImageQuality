@@ -23,7 +23,7 @@ def save_result(path, measurements):
 # Arguments
 parser = argparse.ArgumentParser(description='compute measurements')
 parser.add_argument('--alpha', default=0.5, help='Alpha')
-parser.add_argument('--database', default="FVC2006", help='Database')
+parser.add_argument('--database', default="testsamples", help='Database')
 args = parser.parse_args()
 alpha = float(args.alpha)
 

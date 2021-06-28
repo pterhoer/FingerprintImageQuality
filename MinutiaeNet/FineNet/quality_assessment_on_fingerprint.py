@@ -7,7 +7,7 @@ from math import floor
 
 # Arguments
 parser = argparse.ArgumentParser(description='compute FineNet scores')
-parser.add_argument('--database', default="FVC2006", help='Database')
+parser.add_argument('--database', default="testsamples", help='Database')
 parser.add_argument('--alpha', default=0.5, help='Alpha')
 args = parser.parse_args()
 
@@ -35,7 +35,7 @@ def mean_best(data, best_x):
 #create target folder
 if not os.path.exists(target_path):
     os.mkdir(target_path)
-target_path = os.path.join(target_path, "FineNetscores_%s" % str(args.alpha))
+target_path = os.path.join(target_path, "MiDeCon_scores_%s" % str(args.alpha))
 if not os.path.exists(target_path):
     os.mkdir(target_path)
     

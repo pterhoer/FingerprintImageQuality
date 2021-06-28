@@ -22,13 +22,13 @@ K.set_session(sess)
 
 
 # Prepare dataset for testing.
-inference_set =['../../Data/FVC2006/DB1_A_200x200/', '../../Data/FVC2006/DB2_A/', '../../Data/FVC2006/DB3_A/','../../Data/FVC2006/DB4_A/']
+inference_set =['../../Data/testsamples/sample1/']
 
  
 #image file extension 
 extens = '.bmp'
 #path to minutiae files
-minupath = "../../Data/FVC2006/"
+minupath = "../../Data/testsamples"
 #output director
 db_name = inference_set[0].split('/')[3]
 output_dir = '../output_FineNet/predictions_on_%s' % (db_name)
