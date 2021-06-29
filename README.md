@@ -18,7 +18,9 @@ IEEE International Joint Conference on Biometrics (IJCB) 2021
 - [Abstract](#abstract)
 - [Key Points](#key-points)
 - [Results](#results)
+- [Requirements: Software](#requirements:-software)
 - [Installation](#installation)
+- [Usage](#usage)
 - [Citing](#citing)
 - [Acknowledgement](#acknowledgement)
 - [License](#license)
@@ -58,59 +60,34 @@ Fingerprint quality assessment on the MCC matcher. Each row represents the recog
 
 <img src="Figure3.png" width="800" > 
 
+
+## Requirements: Software
+```shell
+Python 2.7, Tensorflow 1.7.0, Keras 2.1.6
+```
+
 ## Installation
-TODO - Andre
-
 We recommend Anaconda to install the required packages.
-This can be done by creating an virtual environment via
-
 ```shell
-conda env create -f environment.yml
+conda install cv2, numpy, scipy, matplotlib, pydot, graphviz
 ```
 
-or by manually installing the following packages.
+After the required packages have been installed, MiDeCon can be run on the provided test sample.
+
+**The locations of the provided models:**
+- The original pretrained MinutiaeNet-models: **MiDeCon/Models/**.
+- The pretrained MiDeCon(FineNet)-model: **MiDeCon/output_FineNet/FineNet_dropout/**.
 
 
-```shell
-conda create -n serfiq python=3.6.9
-conda install cudatoolkit
-conda install cudnn
-conda install tensorflow=1.14.0
-conda install mxnet
-conda install mxnet-gpu
-conda install tqdm
-conda install -c conda-forge opencv
-conda install -c anaconda scikit-learn
-conda install -c conda-forge scikit-image
-conda install keras=2.2.4
-```
+## Usage
 
-After the required packages have been installed, also download the [Insightface codebase at the needed git point in the repository history](https://github.com/deepinsight/insightface/tree/60bb5829b1d76bfcec7930ce61c41dde26413279) to a location of your choice and extract the archive if necessary.
+The files to run MiDeCon are located in **MiDeCon/FineNet/**.
+- **1.** - Run ```shell FineNet_prediction.py``` to predict on the sample.
+- **2.** - Run ```shell evaluate_predictions.py``` to generate the quality scores.
+- **3.** - Run ```shell quality_assessment_on_fingerprint.py``` to generate a list of fingerprint quality scores with the corresponding fingerprint labels.
+- **4.** - Run ```shell quality_assessment_on_minutiae.py``` to generate a template related to the fingerprint containing the minutiae quality scores.
 
-We will refer to this location as _$Insightface_ in the following. 
-
-The path to the Insightface repository must be passed to the [InsightFace class in face_image_quality.py](https://github.com/pterhoer/FaceImageQuality/blob/b59b2ec3c58429ee867dee25a4d8165b9c65d304/face_image_quality.py#L25). To avoid any problems, absolute paths can be used. Our InsightFace class automatically imports the required dependencies from the Insightface repository.
-```
-insightface = InsightFace(insightface_path = $Insightface) # Repository-path as parameter
-```
-[Please be aware to change the location in our example code according to your setup](https://github.com/pterhoer/FaceImageQuality/blob/b59b2ec3c58429ee867dee25a4d8165b9c65d304/serfiq_example.py#L9).
-
-A pre-trained Arcface model is also required. We recommend using the "_LResNet100E-IR,ArcFace@ms1m-refine-v2_" model. [This can be downloaded from the Insightface Model-Zoo](https://github.com/deepinsight/insightface/wiki/Model-Zoo#31-lresnet100e-irarcfacems1m-refine-v2).
-
-Extract the downloaded _model-0000.params_ and _model-symbol.json_ to the following location on your computer:
-```
-$Insightface/models/
-```
-
-After following these steps you can activate your environment (default: _conda activate serfiq_) and run the [example code](serfiq_example.py).
-
-The implementation for SER-FIQ based on ArcFace can be found here: [Implementation](face_image_quality.py). <br/>
-In the [Paper](https://arxiv.org/abs/2003.09373), this is refered to _SER-FIQ (same model) based on ArcFace_. <br/>
-
-
-
-
-
+The default output directory is **Data/**.
 
 ## Citing
 
