@@ -18,7 +18,7 @@ IEEE International Joint Conference on Biometrics (IJCB) 2021
 - [Abstract](#abstract)
 - [Key Points](#key-points)
 - [Results](#results)
-- [Requirements: Software](#requirements--software)
+- [Requirements: Software](#requirements-software)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Citing](#citing)
@@ -62,9 +62,7 @@ Fingerprint quality assessment on the MCC matcher. Each row represents the recog
 
 
 ## Requirements: Software
-```shell
-Python 2.7, Tensorflow 1.7.0, Keras 2.1.6
-```
+``` Python 2.7```, ```Tensorflow 1.7.0```, ```Keras 2.1.6```.
 
 ## Installation
 We recommend Anaconda to install the required packages.
@@ -82,10 +80,10 @@ After the required packages have been installed, MiDeCon can be run on the provi
 ## Usage
 
 The files to run MiDeCon are located in **MiDeCon/FineNet/**.
-- **1.** - Run ``` FineNet_prediction.py``` to predict on the sample.
-- **2.** - Run ``` evaluate_predictions.py``` to generate the quality scores.
-- **3.** - Run ``` quality_assessment_on_fingerprint.py``` to generate a list of fingerprint quality scores with the corresponding fingerprint labels.
-- **4.** - Run ``` quality_assessment_on_minutiae.py``` to generate a template related to the fingerprint containing the minutiae quality scores.
+  **1.** - Run ``` FineNet_prediction.py``` to predict on the sample.
+  **2.** - Run ``` evaluate_predictions.py``` to generate the quality scores.
+  **3.** - Run ``` quality_assessment_on_fingerprint.py``` to generate a list of fingerprint quality scores with the corresponding fingerprint labels.
+  **4.** - Run ``` quality_assessment_on_minutiae.py``` to generate a template related to the fingerprint containing the minutiae quality scores.
 
 The default output directory is **Data/**.
 
