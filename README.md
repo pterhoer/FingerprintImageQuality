@@ -72,11 +72,6 @@ conda install cv2, numpy, scipy, matplotlib, pydot, graphviz
 
 After the required packages have been installed, MiDeCon can be run on the provided test sample.
 
-**The locations of the provided models:**
-- The original pretrained MinutiaeNet-models: **MiDeCon/Models/**.
-- The pretrained MiDeCon(FineNet)-model: **MiDeCon/output_FineNet/FineNet_dropout/**.
-
-
 ## Usage
 
 The files to run MiDeCon are located in **MiDeCon/FineNet/**.
@@ -86,6 +81,11 @@ The files to run MiDeCon are located in **MiDeCon/FineNet/**.
 4. Run ``` quality_assessment_on_minutiae.py``` to generate a template related to the fingerprint containing the minutiae quality scores.
 
 The default output directory is **Data/**.
+
+
+**The locations of the provided models:**
+- The original pretrained MinutiaeNet-models: **MiDeCon/Models/**.
+- The pretrained MiDeCon(FineNet)-model: **MiDeCon/output_FineNet/FineNet_dropout/**.
 
 ## Citing
 
