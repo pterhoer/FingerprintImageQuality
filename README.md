@@ -80,8 +80,7 @@ The files to run MiDeCon are located in **MiDeCon/FineNet/**.
 3. Run ``` quality_assessment_on_fingerprint.py``` to generate a list of fingerprint quality scores with the corresponding fingerprint labels.
 4. Run ``` quality_assessment_on_minutiae.py``` to generate a template related to the fingerprint containing the minutiae quality scores.
 
-The default output directory is **Data/**.
-
+The default output directory is **Data/**. <br />
 
 **The locations of the provided models:**
 - The original pretrained MinutiaeNet-models: **MiDeCon/Models/**.
