@@ -70,8 +70,6 @@ We recommend Anaconda to install the required packages.
 conda install cv2, numpy, scipy, matplotlib, pydot, graphviz
 ```
 
-After the required packages have been installed, MiDeCon can be run on the provided test sample. <br /> <br />
-
 **MinutiaeNet models:** <br />
 Download the models and put them into ```MiDeCon/Models/``` <br />
 **CoarseNet:** [Googledrive](https://drive.google.com/file/d/1alvw_kAyY4sxdzAkGABQR7waux-rgJKm/view) || [Dropbox](https://www.dropbox.com/s/gppil4wybdjcihy/CoarseNet.h5?dl=0) <br /> 
@@ -79,7 +77,9 @@ Download the models and put them into ```MiDeCon/Models/``` <br />
 
 **MiDeCon model:** <br />
 Download the MiDeCon model and put it into ```MiDeCon/output_FineNet/FineNet_dropout/``` <br />
-**MiDeCon:** [Googledrive](https://drive.google.com/file/d/1v8BS3piG6VkCSNGyBywC1cGitVVrr0-V/view) || [Dropbox](https://www.dropbox.com/s/4r5ozwy5fik286s/FineNet__dropout__model.h5?dl=0)
+**MiDeCon:** [Googledrive](https://drive.google.com/file/d/1v8BS3piG6VkCSNGyBywC1cGitVVrr0-V/view) || [Dropbox](https://www.dropbox.com/s/4r5ozwy5fik286s/FineNet__dropout__model.h5?dl=0) <br />
+
+After the required packages have been installed and the MiDeCon model has been downloaded and placed in the folder, MiDeCon can be run on the provided test sample.
 
 ## Usage
 
