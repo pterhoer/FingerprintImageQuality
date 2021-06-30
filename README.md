@@ -70,15 +70,15 @@ We recommend Anaconda to install the required packages.
 conda install cv2, numpy, scipy, matplotlib, pydot, graphviz
 ```
 
-After the required packages have been installed, MiDeCon can be run on the provided test sample. <br />
+After the required packages have been installed, MiDeCon can be run on the provided test sample. <br /> <br />
 
-**MinutiaeNet models:**
-Download the models and put them into ```MiDeCon/Models/```
-**CoarseNet:** [Googledrive](https://drive.google.com/file/d/1alvw_kAyY4sxdzAkGABQR7waux-rgJKm/view) || [Dropbox](https://www.dropbox.com/s/gppil4wybdjcihy/CoarseNet.h5?dl=0) 
+**MinutiaeNet models:** <br />
+Download the models and put them into ```MiDeCon/Models/``` <br />
+**CoarseNet:** [Googledrive](https://drive.google.com/file/d/1alvw_kAyY4sxdzAkGABQR7waux-rgJKm/view) || [Dropbox](https://www.dropbox.com/s/gppil4wybdjcihy/CoarseNet.h5?dl=0) <br /> 
 **FineNet:** [Googledrive](https://drive.google.com/file/d/1wdGZKNNDAyN-fajjVKJoiyDtXAvl-4zq/view) || [Dropbox](https://www.dropbox.com/s/k7q2vs9255jf2dh/FineNet.h5?dl=0) <br />
 
-**MiDeCon model:**
-Download the MiDeCon model and put it into ```MiDeCon/output_FineNet/FineNet_dropout/```
+**MiDeCon model:** <br />
+Download the MiDeCon model and put it into ```MiDeCon/output_FineNet/FineNet_dropout/``` <br />
 **MiDeCon:** [Googledrive](https://drive.google.com/file/d/1v8BS3piG6VkCSNGyBywC1cGitVVrr0-V/view) || [Dropbox](https://www.dropbox.com/s/4r5ozwy5fik286s/FineNet__dropout__model.h5?dl=0)
 
 ## Usage
