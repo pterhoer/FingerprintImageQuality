@@ -3,12 +3,9 @@
 
 ## MiDeCon: Minutia Detection Confidence for Unsupervised and Accurate Minutia and Fingerprint Quality Assessment
 
-The code for MiDeCon is currently cleaned and will be online end of June.
-
 IEEE International Joint Conference on Biometrics (IJCB) 2021
-
 * [Research Paper](https://arxiv.org/abs/2106.05601)
-* [Implementation - MiDeCon on FineNet](to follow)
+
 
 
 ## Table of Contents 
