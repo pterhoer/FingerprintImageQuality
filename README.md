@@ -94,13 +94,24 @@ If you use this code, please cite the following paper.
 
 
 ```
-@misc{terhoerst2021midecon,
-      title={{MiDeCon}: Unsupervised and Accurate Fingerprint and Minutia Quality Assessment based on Minutia Detection Confidence}, 
-      author={Philipp Terh{\"{o}}rst and Andre Boller and Naser Damer and Florian Kirchbuchner and Arjan Kuijper},
-      year={2021},
-      eprint={2106.05601},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+@inproceedings{DBLP:conf/icb/TerhorstBDKK21,
+  author    = {Philipp Terh{\"{o}}rst and
+               Andr{\'{e}} Boller and
+               Naser Damer and
+               Florian Kirchbuchner and
+               Arjan Kuijper},
+  title     = {MiDeCon: Unsupervised and Accurate Fingerprint and Minutia Quality
+               Assessment based on Minutia Detection Confidence},
+  booktitle = {International {IEEE} Joint Conference on Biometrics, {IJCB} 2021,
+               Shenzhen, China, August 4-7, 2021},
+  pages     = {1--8},
+  publisher = {{IEEE}},
+  year      = {2021},
+  url       = {https://doi.org/10.1109/IJCB52358.2021.9484404},
+  doi       = {10.1109/IJCB52358.2021.9484404},
+  timestamp = {Fri, 23 Jul 2021 10:00:59 +0200},
+  biburl    = {https://dblp.org/rec/conf/icb/TerhorstBDKK21.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
 }
 ```
 
