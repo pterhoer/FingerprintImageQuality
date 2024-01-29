@@ -1,0 +1,20 @@
+name: fpiqa
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=2.7
+  - tensorflow=1.8.0
+  - pip=9.0.3
+  - pip:
+      - keras==2.1.6
+      - Keras-Applications==1.0.*
+      - opencv-python==3.4.0.14
+      - numpy==1.14.3
+      - scipy==1.0.1
+      - scikit-image==0.14.0
+      - matplotlib==2.2.3
+      - pydot==1.2.4
+      - graphviz==0.8.4

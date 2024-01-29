@@ -1,0 +1,9 @@
+# VSCode
+.vscode/
+
+# Model Checkpoints
+MiDeCon/Models/*
+MiDeCon/output_FineNet/*
+
+# .pyc files
+*.pyc
