@@ -1,9 +1,13 @@
 # VSCode
 .vscode/
 
-# Model Checkpoints
+# Model checkpoints
 MiDeCon/Models/*
 MiDeCon/output_FineNet/*
 
 # .pyc files
 *.pyc
+
+# Output directories
+Data/fingerprint_qualityscores/
+Data/minutiae_qualityscores/
