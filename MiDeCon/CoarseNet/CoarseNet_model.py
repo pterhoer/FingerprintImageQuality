@@ -22,7 +22,8 @@ import scipy.ndimage
 import cv2
 import sys,os
 sys.path.append(os.path.realpath('../FineNet'))
-from FineNet_model import FineNetmodel
+sys.path.append(os.path.abspath('../'))
+from FineNet.FineNet_model import FineNetmodel
 
 from keras.models import Model
 from keras.layers import Input
@@ -626,7 +627,7 @@ def deploy_with_GT(deploy_set, output_dir, model_path, FineNet_path=None, set_na
     for i, test in enumerate(
             load_data((img_name, folder_name, img_size), tra_ori_model, rand=False, aug=0.0, batch_size=1)):
 
-        print i, img_name[i]
+        print(i, img_name[i])
         logging.info("%s %d / %d: %s" % (set_name, i + 1, len(img_name), img_name[i]))
         time_start = time()
 
@@ -768,11 +769,11 @@ def deploy_with_GT(deploy_set, output_dir, model_path, FineNet_path=None, set_na
             prffile.write('recall= ' + str(r) + '\n')
             prffile.write('f1= ' + str(f) + '\n')
         prffile.close()
-        print p,r,f
+        print(p,r,f)
 
     time_c = np.mean(np.array(time_c), axis=0)
     ave_prf_nms = np.mean(np.array(ave_prf_nms), 0)
-    print "Precision: %f\tRecall: %f\tF1-measure: %f" % (ave_prf_nms[0], ave_prf_nms[1], ave_prf_nms[2])
+    print("Precision: %f\tRecall: %f\tF1-measure: %f" % (ave_prf_nms[0], ave_prf_nms[1], ave_prf_nms[2]))
     
     #write config file
     with open(os.path.join("%s/%s/" % (output_dir, set_name), 'average_prf.txt'), 'a') as avg_prffile:
@@ -798,7 +799,7 @@ def inference(deploy_set, output_dir, model_path, FineNet_path=None, set_name=No
     logging.info("Predicting %s:" % (set_name))
 
     _, img_name = get_files_in_folder(deploy_set+ 'img_files/', file_ext)
-    print deploy_set
+    print(deploy_set)
 
     # ====== Load FineNet to verify
     if isHavingFineNet == True:
@@ -814,8 +815,8 @@ def inference(deploy_set, output_dir, model_path, FineNet_path=None, set_name=No
 
     main_net_model = CoarseNetmodel((None, None, 1), model_path, mode='deploy')
 
-    for i in xrange(0, len(img_name)):
-        print i
+    for i in range(0, len(img_name)):
+        print(i)
 
         image = misc.imread(deploy_set + 'img_files/'+ img_name[i] + file_ext, mode='L')  # / 255.0
 
@@ -900,7 +901,7 @@ def inference(deploy_set, output_dir, model_path, FineNet_path=None, set_name=No
 
         final_minutiae_score_threashold = early_minutiae_thres - 0.05
 
-        print early_minutiae_thres, final_minutiae_score_threashold
+        print(early_minutiae_thres, final_minutiae_score_threashold)
 
         mnt_refined = []
         if isHavingFineNet == True:

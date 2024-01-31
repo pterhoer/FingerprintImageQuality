@@ -12,7 +12,7 @@
 """
 
 
-from functools import partial
+from functools import partial, reduce
 from multiprocessing import Pool
 from MinutiaeNet_utils import *
 from scipy import misc, ndimage, signal, sparse
@@ -125,7 +125,7 @@ def load_data(dataset, tra_ori_model, rand=False, aug=0.0, batch_size=1, sample_
 
     p_sub_load_data = partial(sub_load_data, img_size=img_size, aug=aug)
 
-    for i in xrange(0,len(img_name), batch_size):
+    for i in range(0,len(img_name), batch_size):
         have_alignment = np.ones([batch_size, 1, 1, 1])
         image = np.zeros((batch_size, img_size[0], img_size[1], 1))
         segment = np.zeros((batch_size, img_size[0], img_size[1], 1))
@@ -135,15 +135,15 @@ def load_data(dataset, tra_ori_model, rand=False, aug=0.0, batch_size=1, sample_
         minutiae_h = np.zeros((batch_size, img_size[0]/8, img_size[1]/8, 1))-1
         minutiae_o = np.zeros((batch_size, img_size[0]/8, img_size[1]/8, 1))-1
 
-        batch_name = [img_name[(i+j)%len(img_name)] for j in xrange(batch_size)]
-        batch_f_name = [folder_name[(i+j)%len(img_name)] for j in xrange(batch_size)]
+        batch_name = [img_name[(i+j)%len(img_name)] for j in range(batch_size)]
+        batch_f_name = [folder_name[(i+j)%len(img_name)] for j in range(batch_size)]
 
         if batch_size > 1 and use_multiprocessing==True:
             results = p.map(p_sub_load_data, zip(batch_name, batch_f_name))
         else:
             results = map(p_sub_load_data, zip(batch_name, batch_f_name))
 
-        for j in xrange(batch_size):
+        for j in range(batch_size):
             # get results from subload
             img, seg, ali, mnt = results[j]
             if np.sum(ali) == 0:
@@ -393,7 +393,7 @@ tra_ori_model = get_tra_ori()
 
 def get_maximum_img_size_and_names(dataset, sample_rate=None, max_size=None):
 
-    if isinstance(dataset, basestring):
+    if isinstance(dataset, str):
         dataset = [dataset]
     if sample_rate is None:
         sample_rate = [1]*len(dataset)
@@ -409,7 +409,7 @@ def get_maximum_img_size_and_names(dataset, sample_rate=None, max_size=None):
         data_ending = '.png'
         
     for folder, rate in zip(dataset, sample_rate):
-        print "data_ending", data_ending
+        print("data_ending", data_ending)
         if train_coarsenet == 1:
             _, img_name_t = get_files_in_folder(folder, 'img_files/*'+data_ending)
         else: _, img_name_t = get_files_in_folder(folder, '*'+data_ending)
@@ -426,4 +426,3 @@ def get_maximum_img_size_and_names(dataset, sample_rate=None, max_size=None):
     # let img_size % 8 == 0
     img_size = np.array(np.ceil(img_size / 8) * 8, dtype=np.int32)
     return img_name, folder_name, img_size
-

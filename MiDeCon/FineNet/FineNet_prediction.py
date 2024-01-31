@@ -3,13 +3,15 @@ from __future__ import division
 
 import sys, os
 sys.path.append(os.path.realpath('../CoarseNet'))
+sys.path.append(os.path.abspath('../'))
+print('Path variables:', sys.path)
 os.environ['KERAS_BACKEND'] = 'tensorflow'
 
 from keras import backend as K
 
-from MinutiaeNet_utils import *
-from CoarseNet_utils import *
-from CoarseNet_model import *
+from CoarseNet.MinutiaeNet_utils import *
+from CoarseNet.CoarseNet_utils import *
+from CoarseNet.CoarseNet_model import *
 import argparse
 import numpy as np
 import json
@@ -107,7 +109,7 @@ def getpatch(x, y, patch_minu_radio):
 
 
 for i, deploy_set in enumerate(inference_set):
-    print "Set", deploy_set
+    print("Set", deploy_set)
     set_name = deploy_set.split('/')[-2]
 
     mkdir(output_dir + '/'+ set_name + '/')
@@ -118,7 +120,7 @@ for i, deploy_set in enumerate(inference_set):
     logging.info("Predicting \"%s\":" % (set_name))
 
 
-    for i in xrange(0, len(img_name)):
+    for i in range(0, len(img_name)):
         logging.info("\"%s\" %d / %d: %s" % (set_name, i + 1, len(img_name), img_name[i]))
 
         image = misc.imread(deploy_set + img_name[i] + extens, mode='L')# / 255.0

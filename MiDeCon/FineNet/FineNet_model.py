@@ -14,6 +14,7 @@
 from __future__ import absolute_import
 from __future__ import division
 
+import keras
 from keras.models import Model
 from keras.layers import Activation, AveragePooling2D, BatchNormalization, Concatenate, Conv2D, Dense, GlobalAveragePooling2D
 from keras.layers import Input, Lambda, MaxPooling2D
@@ -206,7 +207,7 @@ def FineNetmodel(num_classes = 2, pretrained_path = None, input_shape = None):
 
     # Load weights
     if pretrained_path != None:
-        print 'Loading FineNet weights from %s'%(pretrained_path)
+        print('Loading FineNet weights from %s'%(pretrained_path))
         model.load_weights(pretrained_path)
 
     return model
