@@ -8,18 +8,21 @@ print('Path variables:', sys.path)
 os.environ['KERAS_BACKEND'] = 'tensorflow'
 
 from keras import backend as K
+import tensorflow as tf
 
-from CoarseNet.MinutiaeNet_utils import *
-from CoarseNet.CoarseNet_utils import *
-from CoarseNet.CoarseNet_model import *
 import argparse
 import numpy as np
 import json
 import traceback
+import imageio
+
+from CoarseNet.MinutiaeNet_utils import *
+from CoarseNet.CoarseNet_utils import *
+from CoarseNet.CoarseNet_model import *
 
 
-config = K.tf.ConfigProto(gpu_options=K.tf.GPUOptions(allow_growth=True))
-sess = K.tf.Session(config=config)
+config = tf.ConfigProto(gpu_options=tf.GPUOptions(allow_growth=True))
+sess = tf.Session(config=config)
 K.set_session(sess)
 
 
@@ -123,7 +126,7 @@ for i, deploy_set in enumerate(inference_set):
     for i in range(0, len(img_name)):
         logging.info("\"%s\" %d / %d: %s" % (set_name, i + 1, len(img_name), img_name[i]))
 
-        image = misc.imread(deploy_set + img_name[i] + extens, mode='L')# / 255.0
+        image = imageio.imread(deploy_set + img_name[i] + extens, pilmode='L')# / 255.0
         
         img_size = image.shape
         img_size = np.array(img_size, dtype=np.int32) // 8 * 8

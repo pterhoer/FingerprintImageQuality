@@ -37,7 +37,7 @@ def copy_file(path_s, path_t):
     shutil.copy(path_s, path_t)   
 
 def get_files_in_folder(folder, file_ext=None):
-    files = glob.glob(os.path.join(folder, "*" + file_ext))
+    files = glob.glob(folder + "/**/*" + file_ext, recursive=True)
     files_name = []
     for i in files:
         _, name = os.path.split(i)
