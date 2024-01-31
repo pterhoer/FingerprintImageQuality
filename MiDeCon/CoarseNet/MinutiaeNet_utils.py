@@ -251,7 +251,7 @@ def draw_minutiae(image, minutiae, fname, saveimage= False, r=15, drawScore=Fals
     
 
     plt.imshow(image,cmap='gray')
-    plt.hold(True)
+    # plt.hold(True)
     # Check if no minutiae
     if minutiae.shape[0] > 0:
         plt.plot(minutiae[:, 0], minutiae[:, 1], 'rs', fillstyle='none', linewidth=1)
