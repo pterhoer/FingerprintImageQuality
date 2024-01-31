@@ -315,7 +315,7 @@ def label2mnt(mnt_s_out, mnt_w_out, mnt_h_out, mnt_o_out, thresh=0.5):
 
     # get cls results
     mnt_sparse = sparse.coo_matrix(mnt_s_out>thresh)
-    mnt_list = np.array(zip(mnt_sparse.row, mnt_sparse.col), dtype=np.int32)
+    mnt_list = np.array(list(zip(mnt_sparse.row, mnt_sparse.col)), dtype=np.int32)
     if mnt_list.shape[0] == 0:
         return np.zeros((0, 4))
 
@@ -410,16 +410,11 @@ def get_maximum_img_size_and_names(dataset, sample_rate=None, max_size=None):
         
     for folder, rate in zip(dataset, sample_rate):
         print("data_ending", data_ending)
-        if train_coarsenet == 1:
-            _, img_name_t = get_files_in_folder(folder, 'img_files/*'+data_ending)
-        else: _, img_name_t = get_files_in_folder(folder, '*'+data_ending)
+        _, img_name_t = get_files_in_folder(folder, 'img_files/*'+data_ending)
         img_name.extend(img_name_t.tolist()*rate)
         folder_name.extend([folder]*img_name_t.shape[0]*rate)
-
-        if train_coarsenet == 1:
-            img_size.append(np.array(misc.imread(folder + 'img_files/'+img_name_t[0] + data_ending, mode='L').shape))
-        else: img_size.append(np.array(misc.imread(folder + img_name_t[0] + data_ending, mode='L').shape))
-
+        img_size.append(np.array(misc.imread(folder + 'img_files/'+img_name_t[0] + data_ending, mode='L').shape))
+    
     img_name = np.asarray(img_name)
     folder_name = np.asarray(folder_name)
     img_size = np.max(np.asarray(img_size), axis=0)

@@ -17,3 +17,4 @@ dependencies:
     - scipy==1.0.1
     - scikit-image==0.14.0
     - opencv-python==3.4.0.14
+    - nbconvert==6.0.7
