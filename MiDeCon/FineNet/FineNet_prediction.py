@@ -9,12 +9,14 @@ os.environ['KERAS_BACKEND'] = 'tensorflow'
 
 from keras import backend as K
 import tensorflow as tf
+# Suppress tensorflow warnings for now
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 import argparse
 import numpy as np
 import json
 import traceback
-import imageio
+import imageio.v2 as imageio
 
 from CoarseNet.MinutiaeNet_utils import *
 from CoarseNet.CoarseNet_utils import *

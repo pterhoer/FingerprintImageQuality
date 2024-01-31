@@ -17,7 +17,7 @@ from multiprocessing import Pool
 from MinutiaeNet_utils import *
 from scipy import misc, ndimage, signal, sparse
 import numpy as np
-import imageio
+import imageio.v2 as imageio
 
 from keras import backend as K
 from keras.models import Model
