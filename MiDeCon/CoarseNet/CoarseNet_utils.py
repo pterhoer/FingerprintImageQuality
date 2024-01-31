@@ -412,10 +412,13 @@ def get_maximum_img_size_and_names(dataset, sample_rate=None, max_size=None):
     for folder, rate in zip(dataset, sample_rate):
         print("data_ending", data_ending)
         _, img_name_t = get_files_in_folder(folder, data_ending)
+        for i in range(len(img_name_t)):
+            prefix, name = os.path.split(img_name_t[i])
+            img_name_t[i] = name
         img_name.extend(img_name_t.tolist()*rate)
         folder_name.extend([folder]*img_name_t.shape[0]*rate)
-        print(img_name_t)
-        img_size.append(np.array(imageio.imread(folder + img_name_t[0] + data_ending, pilmode='L')).shape)
+        file_path = os.path.join(folder, prefix, img_name_t[0] + data_ending)
+        img_size.append(np.array(imageio.imread(file_path, pilmode='L')).shape)
     
     img_name = np.asarray(img_name)
     folder_name = np.asarray(folder_name)

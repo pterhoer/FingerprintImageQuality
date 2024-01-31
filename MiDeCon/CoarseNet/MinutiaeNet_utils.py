@@ -37,10 +37,12 @@ def copy_file(path_s, path_t):
     shutil.copy(path_s, path_t)   
 
 def get_files_in_folder(folder, file_ext=None):
-    files = glob.glob(folder + "/**/*" + file_ext, recursive=True)
+    files = sorted(glob.glob(folder + "/**/*" + file_ext, recursive=True))
     files_name = []
     for i in files:
-        _, name = os.path.split(i)
+        # _, name = os.path.split(i)
+        # Append to files_name full path from folder
+        name = os.path.relpath(i, folder)
         name, ext = os.path.splitext(name)
         files_name.append(name)
     return np.asarray(files), np.asarray(files_name)
