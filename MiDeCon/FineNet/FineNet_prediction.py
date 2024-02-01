@@ -6,6 +6,7 @@ sys.path.append(os.path.realpath('../CoarseNet'))
 sys.path.append(os.path.abspath('../'))
 print('Path variables:', sys.path)
 os.environ['KERAS_BACKEND'] = 'tensorflow'
+# os.environ["CUDA_VISIBLE_DEVICES"] = "6"  # Select specific GPU
 
 from keras import backend as K
 import tensorflow as tf
@@ -22,6 +23,11 @@ from CoarseNet.MinutiaeNet_utils import *
 from CoarseNet.CoarseNet_utils import *
 from CoarseNet.CoarseNet_model import *
 
+def get_available_gpus():
+    local_device_protos = tf.config.experimental.list_physical_devices('GPU')
+    return [x.name for x in local_device_protos]
+
+print(get_available_gpus())
 
 config = tf.ConfigProto(gpu_options=tf.GPUOptions(allow_growth=True))
 sess = tf.Session(config=config)
@@ -166,7 +172,7 @@ for i, deploy_set in enumerate(inference_set):
                         
                         #predict 100 times on each minutia
                         for n in range(100):
-                                [isMinutiaeProb] = model_FineNet.predict(patch_minu)
+                                [isMinutiaeProb] = model_FineNet.predict(patch_minu)  #XXX: Key approach
                                 isMinutiaeProb = isMinutiaeProb[0]
 
                                 minu_prediction.append(str(isMinutiaeProb))
