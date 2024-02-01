@@ -150,7 +150,7 @@ for i, deploy_set in enumerate(inference_set):
             patch_minu_radio = 28
             if FineNet_path != None:
                 for idx, minu in enumerate(minu_list):
-                    print(minu[0], minu[1])
+                    print((minu[0], minu[1]))
                     minu_prediction = []
                     try:
                         # Extract patch from image
