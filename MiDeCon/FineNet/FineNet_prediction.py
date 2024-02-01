@@ -6,7 +6,7 @@ sys.path.append(os.path.realpath('../CoarseNet'))
 sys.path.append(os.path.abspath('../'))
 print('Path variables:', sys.path)
 os.environ['KERAS_BACKEND'] = 'tensorflow'
-# os.environ["CUDA_VISIBLE_DEVICES"] = "6"  # Select specific GPU
+os.environ["CUDA_VISIBLE_DEVICES"] = "7"  # Select specific GPU
 
 from keras import backend as K
 import tensorflow as tf
