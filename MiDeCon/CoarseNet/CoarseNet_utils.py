@@ -132,9 +132,9 @@ def load_data(dataset, tra_ori_model, rand=False, aug=0.0, batch_size=1, sample_
         segment = np.zeros((batch_size, img_size[0], img_size[1], 1))
         alignment = np.zeros((batch_size, img_size[0], img_size[1], 1))
 
-        minutiae_w = np.zeros((batch_size, img_size[0]/8, img_size[1]/8, 1))-1
-        minutiae_h = np.zeros((batch_size, img_size[0]/8, img_size[1]/8, 1))-1
-        minutiae_o = np.zeros((batch_size, img_size[0]/8, img_size[1]/8, 1))-1
+        minutiae_w = np.zeros((batch_size, img_size[0]//8, img_size[1]//8, 1))-1
+        minutiae_h = np.zeros((batch_size, img_size[0]//8, img_size[1]//8, 1))-1
+        minutiae_o = np.zeros((batch_size, img_size[0]//8, img_size[1]//8, 1))-1
 
         batch_name = [img_name[(i+j)%len(img_name)] for j in range(batch_size)]
         batch_f_name = [folder_name[(i+j)%len(img_name)] for j in range(batch_size)]
@@ -143,6 +143,8 @@ def load_data(dataset, tra_ori_model, rand=False, aug=0.0, batch_size=1, sample_
             results = p.map(p_sub_load_data, zip(batch_name, batch_f_name))
         else:
             results = map(p_sub_load_data, zip(batch_name, batch_f_name))
+
+        results = list(results)
 
         for j in range(batch_size):
             # get results from subload

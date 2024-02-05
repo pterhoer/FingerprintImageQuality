@@ -18,6 +18,8 @@ from time import time
 from datetime import datetime
 from CoarseNet_utils import *
 from scipy import misc, ndimage, signal, sparse, io
+import imageio.v2 as imageio
+from PIL import Image
 import scipy.ndimage
 import cv2
 import sys,os
@@ -631,8 +633,8 @@ def deploy_with_GT(deploy_set, output_dir, model_path, FineNet_path=None, set_na
         logging.info("%s %d / %d: %s" % (set_name, i + 1, len(img_name), img_name[i]))
         time_start = time()
 
-        image = misc.imread(deploy_set + img_name[i] + '.tif', mode='L')# / 255.0
-        mask = misc.imread(deploy_set + 'seg_results/' + img_name[i] + '.jpg', mode='L') / 255.0
+        image = imageio.imread(deploy_set + 'img_files/' + img_name[i] + '.bmp', pilmode='L')# / 255.0
+        mask = imageio.imread(deploy_set + 'seg_files/' + img_name[i] + '.bmp', pilmode='L') / 255.0
 
         img_size = image.shape
         img_size = np.array(img_size, dtype=np.int32) // 8 * 8
@@ -750,9 +752,9 @@ def deploy_with_GT(deploy_set, output_dir, model_path, FineNet_path=None, set_na
         time_afterpost = time()
         mnt_writer(mnt_nms, img_name[i], img_size, "%s/%s/mnt_results/%s.mnt" % (output_dir, set_name, img_name[i]))
         draw_minutiae_overlay_with_score(image, mnt_nms, mnt_gt[:, :3], "%s/%s/%s_minu.jpg"%(output_dir, set_name, img_name[i]),saveimage=True)
-        #misc.imsave("%s/%s/%s_score.jpg"%(output_dir, set_name, img_name[i]), np.squeeze(mnt_s_out_upscale))
+        #imageio.imsave("%s/%s/%s_score.jpg"%(output_dir, set_name, img_name[i]), np.squeeze(mnt_s_out_upscale))
 
-        #misc.imsave("%s/%s/seg_results/%s_seg.jpg" % (output_dir, set_name, img_name[i]), final_mask)
+        #imageio.imsave("%s/%s/seg_results/%s_seg.jpg" % (output_dir, set_name, img_name[i]), final_mask)
 
         time_afterdraw = time()
         time_c.append([time_afterconv - time_start, time_afterpost - time_afterconv, time_afterdraw - time_afterpost])
@@ -818,14 +820,14 @@ def inference(deploy_set, output_dir, model_path, FineNet_path=None, set_name=No
     for i in range(0, len(img_name)):
         print(i)
 
-        image = misc.imread(deploy_set + 'img_files/'+ img_name[i] + file_ext, mode='L')  # / 255.0
+        image = imageio.imread(deploy_set + 'img_files/'+ img_name[i] + file_ext, pilmode='L')  # / 255.0
 
         img_size = image.shape
         img_size = np.array(img_size, dtype=np.int32) // 8 * 8
 
         # read the mask from files
         try:
-            mask = misc.imread(deploy_set + 'seg_files/' + img_name[i] + '.jpg', mode='L') / 255.0
+            mask = imageio.imread(deploy_set + 'seg_files/' + img_name[i] + '.jpg', pilmode='L') / 255.0
         except:
             mask = np.ones((img_size[0],img_size[1]))
 
@@ -962,7 +964,8 @@ def inference(deploy_set, output_dir, model_path, FineNet_path=None, set_name=No
         mnt_writer(mnt_nms, img_name[i], img_size, "%s/%s/mnt_results/%s.mnt"%(output_dir, set_name, img_name[i]))
         draw_minutiae(original_image, mnt_nms, "%s/%s/%s_minu.jpg"%(output_dir, set_name, img_name[i]),saveimage=True)
 
-        misc.imsave("%s/%s/seg_results/%s_seg.jpg" % (output_dir, set_name, img_name[i]), final_mask)
+        out_img = Image.fromarray(final_mask * 255.0).convert("L")  # Convert mask to grayscale image
+        imageio.imsave("%s/%s/seg_results/%s_seg.jpg" % (output_dir, set_name, img_name[i]), out_img)
 
         time_afterdraw = time()
         time_c.append([time_afterconv - time_start, time_afterpost - time_afterconv, time_afterdraw - time_afterpost])

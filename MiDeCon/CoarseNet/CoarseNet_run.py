@@ -16,33 +16,40 @@ from __future__ import division
 
 import os
 os.environ['KERAS_BACKEND'] = 'tensorflow'
+os.environ["CUDA_VISIBLE_DEVICES"] = "7"  # Select specific GPU
 
 from datetime import datetime
 from keras import backend as K
+import tensorflow as tf
+# Suppress tensorflow warnings for now
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 from MinutiaeNet_utils import *
 from CoarseNet_utils import *
 from CoarseNet_model import *
 
+def get_available_gpus():
+    local_device_protos = tf.config.experimental.list_physical_devices('GPU')
+    return [x.name for x in local_device_protos]
 
+print(get_available_gpus())
 
-config = K.tf.ConfigProto(gpu_options=K.tf.GPUOptions(allow_growth=True))
-sess = K.tf.Session(config=config)
+config = tf.ConfigProto(gpu_options=tf.GPUOptions(allow_growth=True))
+sess = tf.Session(config=config)
 K.set_session(sess)
 
-# mode = 'inference'
-mode = 'deploy'
+mode = 'inference'
+# mode = 'deploy'
 
 # Can use multiple folders for deploy, inference
-deploy_set = ['../../Dbs/FVC2004/DB1_B/','../../Dbs/FVC2004/DB2_B/','../../Dbs/FVC2004/DB3_B/','../../Dbs/FVC2004/DB4_B/']
-#deploy_set = ['../../Dbs/FVC2006/DB1_A/', '../../Dbs/FVC2006/DB2_A/', '../../Dbs/FVC2006/DB3_A/', '../../Dbs/FVC2006/DB4_A/','../../Dbs/FVC2006/DB1_B/', '../../Dbs/FVC2006/DB2_B/', '../../Dbs/FVC2006/DB3_B/', '../../Dbs/FVC2006/DB4_B/']
-inference_set = ['../Dataset/',]
+deploy_set = ['../Dataset/CoarseNet_train/',]
+inference_set = ['../Dataset/CoarseNet_test/',]
 
 
 pretrain_dir = '../Models/CoarseNet.h5'
 output_dir = '../output_CoarseNet/'+datetime.now().strftime('%Y%m%d-%H%M%S')
 
-FineNet_dir = '../output_FineNet/FineNet6/FineNet__dropout__model.h5'
+FineNet_dir = '../output_FineNet/FineNet_dropout/FineNet__dropout__model.h5'
 #FineNet_dir = '../Models/FineNet.h5'
 
 def main():

@@ -275,7 +275,7 @@ def draw_minutiae_overlay(image, minutiae, mnt_gt, fname, saveimage= False, r=15
     
 
     plt.imshow(image,cmap='gray')
-    plt.hold(True)
+    # plt.hold(True)
 
     if mnt_gt.shape[1] > 3:
         mnt_gt = mnt_gt[:,:3]
@@ -310,7 +310,7 @@ def draw_minutiae_overlay_with_score(image, minutiae, mnt_gt, fname, saveimage=F
     fig = plt.figure()
 
     plt.imshow(image, cmap='gray')
-    plt.hold(True)
+    # plt.hold(True)
 
 
     if mnt_gt.shape[0] > 0:
@@ -351,7 +351,7 @@ def draw_ori_on_img(img, ori, mask, fname, saveimage=False, coh=None, stride=16)
         coh = np.ones_like(img)
     fig = plt.figure()
     plt.imshow(img,cmap='gray')
-    plt.hold(True)  
+    # plt.hold(True)  
     for i in range(stride,img.shape[0],stride):
         for j in range(stride,img.shape[1],stride):
             if mask[i, j] == 0:
