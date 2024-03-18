@@ -3,21 +3,34 @@ from __future__ import division
 
 import sys, os
 sys.path.append(os.path.realpath('../CoarseNet'))
+sys.path.append(os.path.abspath('../'))
+print('Path variables:', sys.path)
 os.environ['KERAS_BACKEND'] = 'tensorflow'
+os.environ["CUDA_VISIBLE_DEVICES"] = "7"  # Select specific GPU
 
 from keras import backend as K
+import tensorflow as tf
+# Suppress tensorflow warnings for now
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
-from MinutiaeNet_utils import *
-from CoarseNet_utils import *
-from CoarseNet_model import *
 import argparse
 import numpy as np
 import json
 import traceback
+import imageio.v2 as imageio
 
+from CoarseNet.MinutiaeNet_utils import *
+from CoarseNet.CoarseNet_utils import *
+from CoarseNet.CoarseNet_model import *
 
-config = K.tf.ConfigProto(gpu_options=K.tf.GPUOptions(allow_growth=True))
-sess = K.tf.Session(config=config)
+def get_available_gpus():
+    local_device_protos = tf.config.experimental.list_physical_devices('GPU')
+    return [x.name for x in local_device_protos]
+
+print(get_available_gpus())
+
+config = tf.ConfigProto(gpu_options=tf.GPUOptions(allow_growth=True))
+sess = tf.Session(config=config)
 K.set_session(sess)
 
 
@@ -107,7 +120,7 @@ def getpatch(x, y, patch_minu_radio):
 
 
 for i, deploy_set in enumerate(inference_set):
-    print "Set", deploy_set
+    print("Set", deploy_set)
     set_name = deploy_set.split('/')[-2]
 
     mkdir(output_dir + '/'+ set_name + '/')
@@ -118,10 +131,10 @@ for i, deploy_set in enumerate(inference_set):
     logging.info("Predicting \"%s\":" % (set_name))
 
 
-    for i in xrange(0, len(img_name)):
+    for i in range(0, len(img_name)):
         logging.info("\"%s\" %d / %d: %s" % (set_name, i + 1, len(img_name), img_name[i]))
 
-        image = misc.imread(deploy_set + img_name[i] + extens, mode='L')# / 255.0
+        image = imageio.imread(deploy_set + img_name[i] + extens, pilmode='L')# / 255.0
         
         img_size = image.shape
         img_size = np.array(img_size, dtype=np.int32) // 8 * 8
@@ -143,7 +156,7 @@ for i, deploy_set in enumerate(inference_set):
             patch_minu_radio = 28
             if FineNet_path != None:
                 for idx, minu in enumerate(minu_list):
-                    print(minu[0], minu[1])
+                    print((minu[0], minu[1]))
                     minu_prediction = []
                     try:
                         # Extract patch from image
@@ -159,7 +172,7 @@ for i, deploy_set in enumerate(inference_set):
                         
                         #predict 100 times on each minutia
                         for n in range(100):
-                                [isMinutiaeProb] = model_FineNet.predict(patch_minu)
+                                [isMinutiaeProb] = model_FineNet.predict(patch_minu)  #XXX: Key approach
                                 isMinutiaeProb = isMinutiaeProb[0]
 
                                 minu_prediction.append(str(isMinutiaeProb))

@@ -12,11 +12,12 @@
 """
 
 
-from functools import partial
+from functools import partial, reduce
 from multiprocessing import Pool
 from MinutiaeNet_utils import *
 from scipy import misc, ndimage, signal, sparse
 import numpy as np
+import imageio.v2 as imageio
 
 from keras import backend as K
 from keras.models import Model
@@ -39,18 +40,18 @@ def sub_load_data(data, img_size, aug):
         data_ending = '.bmp'
        
     if train_coarsenet == 1:
-        img = misc.imread(dataset + 'img_files/'+img_name+data_ending, mode='L')
-    else: img = misc.imread(dataset+img_name+data_ending, mode='L')
+        img = imageio.imread(dataset + 'img_files/'+img_name+data_ending, pilmode='L')
+    else: img = imageio.imread(dataset+img_name+data_ending, pilmode='L')
 
     try:
         if train_coarsenet == 1:
-            seg = misc.imread(dataset + 'seg_files/' + img_name + '.jpg', mode='L')
-        else:seg = misc.imread(dataset + 'seg_results/' + img_name + '.jpg', mode='L')
+            seg = imageio.imread(dataset + 'seg_files/' + img_name + '.jpg', pilmode='L')
+        else:seg = imageio.imread(dataset + 'seg_results/' + img_name + '.jpg', pilmode='L')
     except:
         seg = np.ones_like(img)
 
     try:
-        ali = misc.imread(dataset+'OF_results/'+img_name+'.jpg', mode='L')
+        ali = imageio.imread(dataset+'OF_results/'+img_name+'.jpg', pilmode='L')
     except:
         ali = np.zeros_like(img)
     if train_coarsenet == 1:
@@ -125,25 +126,27 @@ def load_data(dataset, tra_ori_model, rand=False, aug=0.0, batch_size=1, sample_
 
     p_sub_load_data = partial(sub_load_data, img_size=img_size, aug=aug)
 
-    for i in xrange(0,len(img_name), batch_size):
+    for i in range(0,len(img_name), batch_size):
         have_alignment = np.ones([batch_size, 1, 1, 1])
         image = np.zeros((batch_size, img_size[0], img_size[1], 1))
         segment = np.zeros((batch_size, img_size[0], img_size[1], 1))
         alignment = np.zeros((batch_size, img_size[0], img_size[1], 1))
 
-        minutiae_w = np.zeros((batch_size, img_size[0]/8, img_size[1]/8, 1))-1
-        minutiae_h = np.zeros((batch_size, img_size[0]/8, img_size[1]/8, 1))-1
-        minutiae_o = np.zeros((batch_size, img_size[0]/8, img_size[1]/8, 1))-1
+        minutiae_w = np.zeros((batch_size, img_size[0]//8, img_size[1]//8, 1))-1
+        minutiae_h = np.zeros((batch_size, img_size[0]//8, img_size[1]//8, 1))-1
+        minutiae_o = np.zeros((batch_size, img_size[0]//8, img_size[1]//8, 1))-1
 
-        batch_name = [img_name[(i+j)%len(img_name)] for j in xrange(batch_size)]
-        batch_f_name = [folder_name[(i+j)%len(img_name)] for j in xrange(batch_size)]
+        batch_name = [img_name[(i+j)%len(img_name)] for j in range(batch_size)]
+        batch_f_name = [folder_name[(i+j)%len(img_name)] for j in range(batch_size)]
 
         if batch_size > 1 and use_multiprocessing==True:
             results = p.map(p_sub_load_data, zip(batch_name, batch_f_name))
         else:
             results = map(p_sub_load_data, zip(batch_name, batch_f_name))
 
-        for j in xrange(batch_size):
+        results = list(results)
+
+        for j in range(batch_size):
             # get results from subload
             img, seg, ali, mnt = results[j]
             if np.sum(ali) == 0:
@@ -225,10 +228,10 @@ def reduce_sum(x):
 
 # Group with depth
 def merge_concat(x):
-    return K.tf.concat(x,3)
+    return tf.concat(x,3)
 def select_max(x):
     x = x / (K.max(x, axis=-1, keepdims=True)+K.epsilon())
-    x = K.tf.where(K.tf.greater(x, 0.999), x, K.tf.zeros_like(x)) # select the biggest one
+    x = tf.where(tf.greater(x, 0.999), x, tf.zeros_like(x)) # select the biggest one
     x = x / (K.sum(x, axis=-1, keepdims=True)+K.epsilon()) # prevent two or more ori is selected
     return x
 
@@ -252,15 +255,15 @@ def ori_highest_peak(y_pred, length=180):
 def ori_acc_delta_k(y_true, y_pred, k=10, max_delta=180):
     # get ROI
     label_seg = K.sum(y_true, axis=-1)
-    label_seg = K.tf.cast(K.tf.greater(label_seg, 0), K.tf.float32)
+    label_seg = tf.cast(tf.greater(label_seg, 0), tf.float32)
     # get pred angle
-    angle = K.cast(K.argmax(ori_highest_peak(y_pred, max_delta), axis=-1), dtype=K.tf.float32)*2.0+1.0
+    angle = K.cast(K.argmax(ori_highest_peak(y_pred, max_delta), axis=-1), dtype=tf.float32)*2.0+1.0
     # get gt angle
-    angle_t = K.cast(K.argmax(y_true, axis=-1), dtype=K.tf.float32)*2.0+1.0
+    angle_t = K.cast(K.argmax(y_true, axis=-1), dtype=tf.float32)*2.0+1.0
     # get delta
     angle_delta = K.abs(angle_t - angle)
-    acc = K.tf.less_equal(K.minimum(angle_delta, max_delta-angle_delta), k)
-    acc = K.cast(acc, dtype=K.tf.float32)
+    acc = tf.less_equal(K.minimum(angle_delta, max_delta-angle_delta), k)
+    acc = K.cast(acc, dtype=tf.float32)
     # apply ROI
     acc = acc*label_seg
     acc = K.sum(acc) / (K.sum(label_seg)+K.epsilon())
@@ -275,27 +278,27 @@ def mnt_acc_delta_20(y_true, y_pred):
     return ori_acc_delta_k(y_true, y_pred, 20, 360)
 
 def seg_acc_pos(y_true, y_pred):
-    y_true = K.tf.where(K.tf.less(y_true,0.0), K.tf.zeros_like(y_true), y_true)
-    acc = K.cast(K.equal(y_true, K.round(y_pred)), dtype=K.tf.float32)
+    y_true = tf.where(tf.less(y_true,0.0), tf.zeros_like(y_true), y_true)
+    acc = K.cast(K.equal(y_true, K.round(y_pred)), dtype=tf.float32)
     acc = K.sum(acc * y_true) / (K.sum(y_true)+K.epsilon())
     return acc
 def seg_acc_neg(y_true, y_pred):
-    y_true = K.tf.where(K.tf.less(y_true,0.0), K.tf.zeros_like(y_true), y_true)
-    acc = K.cast(K.equal(y_true, K.round(y_pred)), dtype=K.tf.float32)
+    y_true = tf.where(tf.less(y_true,0.0), tf.zeros_like(y_true), y_true)
+    acc = K.cast(K.equal(y_true, K.round(y_pred)), dtype=tf.float32)
     acc = K.sum(acc * (1-y_true)) / (K.sum(1-y_true)+K.epsilon())
     return acc
 def seg_acc_all(y_true, y_pred):
-    y_true = K.tf.where(K.tf.less(y_true,0.0), K.tf.zeros_like(y_true), y_true)
+    y_true = tf.where(tf.less(y_true,0.0), tf.zeros_like(y_true), y_true)
     return K.mean(K.equal(y_true, K.round(y_pred)))
 
 def mnt_mean_delta(y_true, y_pred):
     # get ROI
     label_seg = K.sum(y_true, axis=-1)
-    label_seg = K.tf.cast(K.tf.greater(label_seg, 0), K.tf.float32)
+    label_seg = tf.cast(tf.greater(label_seg, 0), tf.float32)
     # get pred pos
-    pos = K.cast(K.argmax(y_pred, axis=-1), dtype=K.tf.float32)
+    pos = K.cast(K.argmax(y_pred, axis=-1), dtype=tf.float32)
     # get gt pos
-    pos_t = K.cast(K.argmax(y_true, axis=-1), dtype=K.tf.float32)
+    pos_t = K.cast(K.argmax(y_true, axis=-1), dtype=tf.float32)
     # get delta
     pos_delta = K.abs(pos_t - pos)
     # apply ROI
@@ -315,7 +318,7 @@ def label2mnt(mnt_s_out, mnt_w_out, mnt_h_out, mnt_o_out, thresh=0.5):
 
     # get cls results
     mnt_sparse = sparse.coo_matrix(mnt_s_out>thresh)
-    mnt_list = np.array(zip(mnt_sparse.row, mnt_sparse.col), dtype=np.int32)
+    mnt_list = np.array(list(zip(mnt_sparse.row, mnt_sparse.col)), dtype=np.int32)
     if mnt_list.shape[0] == 0:
         return np.zeros((0, 4))
 
@@ -341,46 +344,46 @@ def label2mnt(mnt_s_out, mnt_w_out, mnt_h_out, mnt_o_out, thresh=0.5):
 def img_normalization(img_input, m0=0.0, var0=1.0):
     m = K.mean(img_input, axis=[1,2,3], keepdims=True)
     var = K.var(img_input, axis=[1,2,3], keepdims=True)
-    after = K.sqrt(var0*K.tf.square(img_input-m)/var)
-    image_n = K.tf.where(K.tf.greater(img_input, m), m0+after, m0-after)
+    after = K.sqrt(var0*tf.square(img_input-m)/var)
+    image_n = tf.where(tf.greater(img_input, m), m0+after, m0-after)
     return image_n
 
 # atan2 function
 def atan2(y_x):
     y, x = y_x[0], y_x[1]+K.epsilon()
-    atan = K.tf.atan(y/x)
-    angle = K.tf.where(K.tf.greater(x,0.0), atan, K.tf.zeros_like(x))
-    angle = K.tf.where(K.tf.logical_and(K.tf.less(x,0.0),  K.tf.greater_equal(y,0.0)), atan+np.pi, angle)
-    angle = K.tf.where(K.tf.logical_and(K.tf.less(x,0.0),  K.tf.less(y,0.0)), atan-np.pi, angle)
+    atan = tf.atan(y/x)
+    angle = tf.where(tf.greater(x,0.0), atan, tf.zeros_like(x))
+    angle = tf.where(tf.logical_and(tf.less(x,0.0),  tf.greater_equal(y,0.0)), atan+np.pi, angle)
+    angle = tf.where(tf.logical_and(tf.less(x,0.0),  tf.less(y,0.0)), atan-np.pi, angle)
     return angle
 
 # traditional orientation estimation
 def orientation(image, stride=8, window=17):
-    with K.tf.name_scope('orientation'):
+    with tf.name_scope('orientation'):
         assert image.get_shape().as_list()[3] == 1, 'Images must be grayscale'
         strides = [1, stride, stride, 1]
         E = np.ones([window, window, 1, 1])
         sobelx = np.reshape(np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=float), [3, 3, 1, 1])
         sobely = np.reshape(np.array([[-1, -2, -1], [0, 0, 0], [1, 2, 1]], dtype=float), [3, 3, 1, 1])
         gaussian = np.reshape(gaussian2d((5, 5), 1), [5, 5, 1, 1])
-        with K.tf.name_scope('sobel_gradient'):
-            Ix = K.tf.nn.conv2d(image, sobelx, strides=[1,1,1,1], padding='SAME', name='sobel_x')
-            Iy = K.tf.nn.conv2d(image, sobely, strides=[1,1,1,1], padding='SAME', name='sobel_y')
-        with K.tf.name_scope('eltwise_1'):
-            Ix2 = K.tf.multiply(Ix, Ix, name='IxIx')
-            Iy2 = K.tf.multiply(Iy, Iy, name='IyIy')
-            Ixy = K.tf.multiply(Ix, Iy, name='IxIy')
-        with K.tf.name_scope('range_sum'):
-            Gxx = K.tf.nn.conv2d(Ix2, E, strides=strides, padding='SAME', name='Gxx_sum')
-            Gyy = K.tf.nn.conv2d(Iy2, E, strides=strides, padding='SAME', name='Gyy_sum')
-            Gxy = K.tf.nn.conv2d(Ixy, E, strides=strides, padding='SAME', name='Gxy_sum')
-        with K.tf.name_scope('eltwise_2'):
-            Gxx_Gyy = K.tf.subtract(Gxx, Gyy, name='Gxx_Gyy')
+        with tf.name_scope('sobel_gradient'):
+            Ix = tf.nn.conv2d(image, sobelx, strides=[1,1,1,1], padding='SAME', name='sobel_x')
+            Iy = tf.nn.conv2d(image, sobely, strides=[1,1,1,1], padding='SAME', name='sobel_y')
+        with tf.name_scope('eltwise_1'):
+            Ix2 = tf.multiply(Ix, Ix, name='IxIx')
+            Iy2 = tf.multiply(Iy, Iy, name='IyIy')
+            Ixy = tf.multiply(Ix, Iy, name='IxIy')
+        with tf.name_scope('range_sum'):
+            Gxx = tf.nn.conv2d(Ix2, E, strides=strides, padding='SAME', name='Gxx_sum')
+            Gyy = tf.nn.conv2d(Iy2, E, strides=strides, padding='SAME', name='Gyy_sum')
+            Gxy = tf.nn.conv2d(Ixy, E, strides=strides, padding='SAME', name='Gxy_sum')
+        with tf.name_scope('eltwise_2'):
+            Gxx_Gyy = tf.subtract(Gxx, Gyy, name='Gxx_Gyy')
             theta = atan2([2*Gxy, Gxx_Gyy]) + np.pi
         # two-dimensional low-pass filter: Gaussian filter here
-        with K.tf.name_scope('gaussian_filter'):
-            phi_x = K.tf.nn.conv2d(K.tf.cos(theta), gaussian, strides=[1,1,1,1], padding='SAME', name='gaussian_x')
-            phi_y = K.tf.nn.conv2d(K.tf.sin(theta), gaussian, strides=[1,1,1,1], padding='SAME', name='gaussian_y')
+        with tf.name_scope('gaussian_filter'):
+            phi_x = tf.nn.conv2d(tf.cos(theta), gaussian, strides=[1,1,1,1], padding='SAME', name='gaussian_x')
+            phi_y = tf.nn.conv2d(tf.sin(theta), gaussian, strides=[1,1,1,1], padding='SAME', name='gaussian_y')
             theta = atan2([phi_y, phi_x])/2
     return theta
 
@@ -393,7 +396,7 @@ tra_ori_model = get_tra_ori()
 
 def get_maximum_img_size_and_names(dataset, sample_rate=None, max_size=None):
 
-    if isinstance(dataset, basestring):
+    if isinstance(dataset, str):
         dataset = [dataset]
     if sample_rate is None:
         sample_rate = [1]*len(dataset)
@@ -409,21 +412,19 @@ def get_maximum_img_size_and_names(dataset, sample_rate=None, max_size=None):
         data_ending = '.png'
         
     for folder, rate in zip(dataset, sample_rate):
-        print "data_ending", data_ending
-        if train_coarsenet == 1:
-            _, img_name_t = get_files_in_folder(folder, 'img_files/*'+data_ending)
-        else: _, img_name_t = get_files_in_folder(folder, '*'+data_ending)
+        print("data_ending", data_ending)
+        _, img_name_t = get_files_in_folder(folder, data_ending)
+        for i in range(len(img_name_t)):
+            prefix, name = os.path.split(img_name_t[i])
+            img_name_t[i] = name
         img_name.extend(img_name_t.tolist()*rate)
         folder_name.extend([folder]*img_name_t.shape[0]*rate)
-
-        if train_coarsenet == 1:
-            img_size.append(np.array(misc.imread(folder + 'img_files/'+img_name_t[0] + data_ending, mode='L').shape))
-        else: img_size.append(np.array(misc.imread(folder + img_name_t[0] + data_ending, mode='L').shape))
-
+        file_path = os.path.join(folder, prefix, img_name_t[0] + data_ending)
+        img_size.append(np.array(imageio.imread(file_path, pilmode='L')).shape)
+    
     img_name = np.asarray(img_name)
     folder_name = np.asarray(folder_name)
     img_size = np.max(np.asarray(img_size), axis=0)
     # let img_size % 8 == 0
     img_size = np.array(np.ceil(img_size / 8) * 8, dtype=np.int32)
     return img_name, folder_name, img_size
-

@@ -18,11 +18,14 @@ from time import time
 from datetime import datetime
 from CoarseNet_utils import *
 from scipy import misc, ndimage, signal, sparse, io
+import imageio.v2 as imageio
+from PIL import Image
 import scipy.ndimage
 import cv2
 import sys,os
 sys.path.append(os.path.realpath('../FineNet'))
-from FineNet_model import FineNetmodel
+sys.path.append(os.path.abspath('../'))
+from FineNet.FineNet_model import FineNetmodel
 
 from keras.models import Model
 from keras.layers import Input
@@ -626,12 +629,12 @@ def deploy_with_GT(deploy_set, output_dir, model_path, FineNet_path=None, set_na
     for i, test in enumerate(
             load_data((img_name, folder_name, img_size), tra_ori_model, rand=False, aug=0.0, batch_size=1)):
 
-        print i, img_name[i]
+        print(i, img_name[i])
         logging.info("%s %d / %d: %s" % (set_name, i + 1, len(img_name), img_name[i]))
         time_start = time()
 
-        image = misc.imread(deploy_set + img_name[i] + '.tif', mode='L')# / 255.0
-        mask = misc.imread(deploy_set + 'seg_results/' + img_name[i] + '.jpg', mode='L') / 255.0
+        image = imageio.imread(deploy_set + 'img_files/' + img_name[i] + '.bmp', pilmode='L')# / 255.0
+        mask = imageio.imread(deploy_set + 'seg_files/' + img_name[i] + '.bmp', pilmode='L') / 255.0
 
         img_size = image.shape
         img_size = np.array(img_size, dtype=np.int32) // 8 * 8
@@ -749,9 +752,9 @@ def deploy_with_GT(deploy_set, output_dir, model_path, FineNet_path=None, set_na
         time_afterpost = time()
         mnt_writer(mnt_nms, img_name[i], img_size, "%s/%s/mnt_results/%s.mnt" % (output_dir, set_name, img_name[i]))
         draw_minutiae_overlay_with_score(image, mnt_nms, mnt_gt[:, :3], "%s/%s/%s_minu.jpg"%(output_dir, set_name, img_name[i]),saveimage=True)
-        #misc.imsave("%s/%s/%s_score.jpg"%(output_dir, set_name, img_name[i]), np.squeeze(mnt_s_out_upscale))
+        #imageio.imsave("%s/%s/%s_score.jpg"%(output_dir, set_name, img_name[i]), np.squeeze(mnt_s_out_upscale))
 
-        #misc.imsave("%s/%s/seg_results/%s_seg.jpg" % (output_dir, set_name, img_name[i]), final_mask)
+        #imageio.imsave("%s/%s/seg_results/%s_seg.jpg" % (output_dir, set_name, img_name[i]), final_mask)
 
         time_afterdraw = time()
         time_c.append([time_afterconv - time_start, time_afterpost - time_afterconv, time_afterdraw - time_afterpost])
@@ -768,11 +771,11 @@ def deploy_with_GT(deploy_set, output_dir, model_path, FineNet_path=None, set_na
             prffile.write('recall= ' + str(r) + '\n')
             prffile.write('f1= ' + str(f) + '\n')
         prffile.close()
-        print p,r,f
+        print(p,r,f)
 
     time_c = np.mean(np.array(time_c), axis=0)
     ave_prf_nms = np.mean(np.array(ave_prf_nms), 0)
-    print "Precision: %f\tRecall: %f\tF1-measure: %f" % (ave_prf_nms[0], ave_prf_nms[1], ave_prf_nms[2])
+    print("Precision: %f\tRecall: %f\tF1-measure: %f" % (ave_prf_nms[0], ave_prf_nms[1], ave_prf_nms[2]))
     
     #write config file
     with open(os.path.join("%s/%s/" % (output_dir, set_name), 'average_prf.txt'), 'a') as avg_prffile:
@@ -798,7 +801,7 @@ def inference(deploy_set, output_dir, model_path, FineNet_path=None, set_name=No
     logging.info("Predicting %s:" % (set_name))
 
     _, img_name = get_files_in_folder(deploy_set+ 'img_files/', file_ext)
-    print deploy_set
+    print(deploy_set)
 
     # ====== Load FineNet to verify
     if isHavingFineNet == True:
@@ -814,17 +817,17 @@ def inference(deploy_set, output_dir, model_path, FineNet_path=None, set_name=No
 
     main_net_model = CoarseNetmodel((None, None, 1), model_path, mode='deploy')
 
-    for i in xrange(0, len(img_name)):
-        print i
+    for i in range(0, len(img_name)):
+        print(i)
 
-        image = misc.imread(deploy_set + 'img_files/'+ img_name[i] + file_ext, mode='L')  # / 255.0
+        image = imageio.imread(deploy_set + 'img_files/'+ img_name[i] + file_ext, pilmode='L')  # / 255.0
 
         img_size = image.shape
         img_size = np.array(img_size, dtype=np.int32) // 8 * 8
 
         # read the mask from files
         try:
-            mask = misc.imread(deploy_set + 'seg_files/' + img_name[i] + '.jpg', mode='L') / 255.0
+            mask = imageio.imread(deploy_set + 'seg_files/' + img_name[i] + '.jpg', pilmode='L') / 255.0
         except:
             mask = np.ones((img_size[0],img_size[1]))
 
@@ -900,7 +903,7 @@ def inference(deploy_set, output_dir, model_path, FineNet_path=None, set_name=No
 
         final_minutiae_score_threashold = early_minutiae_thres - 0.05
 
-        print early_minutiae_thres, final_minutiae_score_threashold
+        print(early_minutiae_thres, final_minutiae_score_threashold)
 
         mnt_refined = []
         if isHavingFineNet == True:
@@ -961,7 +964,8 @@ def inference(deploy_set, output_dir, model_path, FineNet_path=None, set_name=No
         mnt_writer(mnt_nms, img_name[i], img_size, "%s/%s/mnt_results/%s.mnt"%(output_dir, set_name, img_name[i]))
         draw_minutiae(original_image, mnt_nms, "%s/%s/%s_minu.jpg"%(output_dir, set_name, img_name[i]),saveimage=True)
 
-        misc.imsave("%s/%s/seg_results/%s_seg.jpg" % (output_dir, set_name, img_name[i]), final_mask)
+        out_img = Image.fromarray(final_mask * 255.0).convert("L")  # Convert mask to grayscale image
+        imageio.imsave("%s/%s/seg_results/%s_seg.jpg" % (output_dir, set_name, img_name[i]), out_img)
 
         time_afterdraw = time()
         time_c.append([time_afterconv - time_start, time_afterpost - time_afterconv, time_afterdraw - time_afterpost])

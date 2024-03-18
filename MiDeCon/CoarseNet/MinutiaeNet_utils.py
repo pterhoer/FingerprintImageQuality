@@ -37,10 +37,12 @@ def copy_file(path_s, path_t):
     shutil.copy(path_s, path_t)   
 
 def get_files_in_folder(folder, file_ext=None):
-    files = glob.glob(os.path.join(folder, "*" + file_ext))
+    files = sorted(glob.glob(folder + "/**/*" + file_ext, recursive=True))
     files_name = []
     for i in files:
-        _, name = os.path.split(i)
+        # _, name = os.path.split(i)
+        # Append to files_name full path from folder
+        name = os.path.relpath(i, folder)
         name, ext = os.path.splitext(name)
         files_name.append(name)
     return np.asarray(files), np.asarray(files_name)
@@ -68,7 +70,7 @@ def mnt_writer(mnt, image_name, image_size, file_name):
     f = open(file_name, 'w')
     f.write('%s\n'%(image_name))
     f.write('%d %d %d\n'%(mnt.shape[0], image_size[0], image_size[1]))
-    for i in xrange(mnt.shape[0]):
+    for i in range(mnt.shape[0]):
         f.write('%d %d %.6f %.4f\n'%(mnt[i,0], mnt[i,1], mnt[i,2], mnt[i,3]))
     f.close()
     return
@@ -92,10 +94,10 @@ def gabor_fn(ksize, sigma, theta, Lambda, psi, gamma):
 
 def gabor_bank(stride=2,Lambda=8):
 
-    filters_cos = np.ones([25,25,180/stride], dtype=float)
-    filters_sin = np.ones([25,25,180/stride], dtype=float)
+    filters_cos = np.ones([25,25,180//stride], dtype=float)
+    filters_sin = np.ones([25,25,180//stride], dtype=float)
 
-    for n, i in enumerate(xrange(-90,90,stride)):
+    for n, i in enumerate(range(-90,90,stride)):
         theta = i*np.pi/180.
         kernel_cos, kernel_sin = gabor_fn((24,24),4.5, -theta, Lambda, 0, 0.5)
         filters_cos[..., n] = kernel_cos
@@ -125,6 +127,7 @@ def gausslabel(length=180, stride=2):
     y = np.reshape(np.arange(stride/2, length, stride), [1,1,1,-1])
     delta = np.array(np.abs(label - y), dtype=int)
     delta = np.minimum(delta, length-delta)+length/2
+    delta = np.asarray(delta, dtype=int)
     return gaussian_pdf[delta]
 
 def angle_delta(A, B, max_D=np.pi*2):
@@ -181,7 +184,7 @@ def nms(mnt):
     # cal distance
     inrange = distance(mnt_sort, mnt_sort, max_D=16, max_O=np.pi/6).astype(np.float32)
     keep_list = np.ones(mnt_sort.shape[0])
-    for i in xrange(mnt_sort.shape[0]):
+    for i in range(mnt_sort.shape[0]):
         if keep_list[i] == 0:
             continue
         keep_list[i+1:] = keep_list[i+1:]*(1-inrange[i, i+1:])
@@ -199,7 +202,7 @@ def fuse_nms(mnt, mnt_set_2):
     # cal distance
     inrange = distance(mnt_sort, mnt_sort, max_D=16, max_O=2*np.pi).astype(np.float32)
     keep_list = np.ones(mnt_sort.shape[0])
-    for i in xrange(mnt_sort.shape[0]):
+    for i in range(mnt_sort.shape[0]):
         if keep_list[i] == 0:
             continue
         keep_list[i+1:] = keep_list[i+1:]*(1-inrange[i, i+1:])
@@ -248,7 +251,7 @@ def draw_minutiae(image, minutiae, fname, saveimage= False, r=15, drawScore=Fals
     
 
     plt.imshow(image,cmap='gray')
-    plt.hold(True)
+    # plt.hold(True)
     # Check if no minutiae
     if minutiae.shape[0] > 0:
         plt.plot(minutiae[:, 0], minutiae[:, 1], 'rs', fillstyle='none', linewidth=1)
@@ -272,7 +275,7 @@ def draw_minutiae_overlay(image, minutiae, mnt_gt, fname, saveimage= False, r=15
     
 
     plt.imshow(image,cmap='gray')
-    plt.hold(True)
+    # plt.hold(True)
 
     if mnt_gt.shape[1] > 3:
         mnt_gt = mnt_gt[:,:3]
@@ -307,7 +310,7 @@ def draw_minutiae_overlay_with_score(image, minutiae, mnt_gt, fname, saveimage=F
     fig = plt.figure()
 
     plt.imshow(image, cmap='gray')
-    plt.hold(True)
+    # plt.hold(True)
 
 
     if mnt_gt.shape[0] > 0:
@@ -348,9 +351,9 @@ def draw_ori_on_img(img, ori, mask, fname, saveimage=False, coh=None, stride=16)
         coh = np.ones_like(img)
     fig = plt.figure()
     plt.imshow(img,cmap='gray')
-    plt.hold(True)  
-    for i in xrange(stride,img.shape[0],stride):
-        for j in xrange(stride,img.shape[1],stride):
+    # plt.hold(True)  
+    for i in range(stride,img.shape[0],stride):
+        for j in range(stride,img.shape[1],stride):
             if mask[i, j] == 0:
                 continue
             x, y, o, r = j, i, ori[i,j], coh[i,j]*(stride*0.9)
@@ -421,7 +424,7 @@ def FastEnhanceTexture(img,sigma=2.5,show=False):
     w2 = 2 ** nextpow2(w)
 
     FFTsize = np.max([h2, w2])
-    x, y = np.meshgrid(range(-FFTsize / 2, FFTsize / 2), range(-FFTsize / 2, FFTsize / 2))
+    x, y = np.meshgrid(range(-FFTsize // 2, FFTsize // 2), range(-FFTsize // 2, FFTsize // 2))
     r = np.sqrt(x * x + y * y) + 0.0001
     r = r/FFTsize
 
@@ -553,7 +556,7 @@ def get_maps_STFT(img,patch_size = 64,block_size = 16, preprocess = False):
     blkW = (w - patch_size)//block_size+1
     local_info = np.empty((blkH,blkW),dtype = object)
 
-    x, y = np.meshgrid(range(-patch_size / 2,patch_size / 2), range(-patch_size / 2,patch_size / 2))
+    x, y = np.meshgrid(range(-patch_size // 2,patch_size // 2), range(-patch_size // 2,patch_size // 2))
     x = x.astype(np.float32)
     y = y.astype(np.float32)
     r = np.sqrt(x*x + y*y) + 0.0001

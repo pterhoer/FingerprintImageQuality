@@ -59,12 +59,12 @@ Fingerprint quality assessment on the MCC matcher. Each row represents the recog
 
 
 ## Requirements: Software
-``` Python 2.7```, ```Tensorflow 1.7.0```, ```Keras 2.1.6```.
+```Python 3.7```, ```Tensorflow 1.15.*```, ```Keras 2.3.1```.
 
 ## Installation
-We recommend Anaconda to install the required packages.
+We recommend to install the required packages in a conda virtual environment.
 ```shell
-conda install cv2, numpy, scipy, matplotlib, pydot, graphviz
+conda env create -n $YOUR_ENV_NAME -f environment.yml
 ```
 
 **MinutiaeNet models:** <br />
